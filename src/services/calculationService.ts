@@ -26,6 +26,11 @@ export class CalculationService {
         const operationWithoutParentheses = operationBetweenParentheses?.replace("(", "")?.replace(")", "");
 
         if (!operationBetweenParentheses) {
+            
+            const isInfinityCalculation = calculation.match(/-?\d*(\.\d+)*\/0/g)
+            if(isInfinityCalculation){
+                throw new Error('infinity')
+            }
             return this.sendNumbers(calculation);
         }
 
@@ -143,7 +148,7 @@ export class CalculationService {
             case "/":
                 return number1 / number2;
             default:
-                throw new Error("Impossible Opération");
+                throw new Error("Impossible Operation");
         }
     }
 }
