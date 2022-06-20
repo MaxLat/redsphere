@@ -1,39 +1,31 @@
-import logo from "./logo.svg";
+
 import "./App.css";
 import Wrapper from "./components/Wrapper/Wrapper";
 import Screen from "./components/Screen/Screen";
-import { Button, SimpleGrid } from "@mantine/core";
-import { useCallback, useState } from "react";
-
-const btnValues = [
-    ["C", "(", ")", "/"],
-    [7, 8, 9, "X"],
-    [4, 5, 6, "-"],
-    [1, 2, 3, "+"],
-    [0, "."],
-];
+import { Button } from "@mantine/core";
+import { useCallback, useState, useEffect } from "react";
 
 function App() {
     const btns = [
         {
             value: "C",
             function: (event) => clearCalculation(event),
-            id : 'C'
+            id : 'c',
         },
         {
-            value: "(",
-            function: (event) => addParenthese(event),
-            id : '('
+            value: "R",
+            function: (event) => clearCalculation(event),
+            id : 'r',
         },
         {
-            value: ")",
-            function: (event) => closeOpenParenthese(event),
-            id : ')'
+            value: ".",
+            function: (event) => onAddDot(event),
+            id : '.',
         },
         {
             value: "/",
             function: (event) => onDivider(event),
-            id : '/'
+            id : '/',
         },
         {
             value: "7",
@@ -50,12 +42,7 @@ function App() {
         {
             value: "x",
             function: (event) => onMultiply(event),
-            id : 'x'
-        },
-        {
-            value: "+",
-            function: (event) => onAddition(event),
-            id : '+'
+            id : 'x',
         },
         {
             value: "4",
@@ -70,12 +57,12 @@ function App() {
             function: (event) => addNumberInCalculation(event),
         },
         {
-            value: "-",
-            function: (event) => onSubtrack(event),
-            id : '-'
+            value: "+",
+            function: (event) => onAddition(event),
+            id : '+',
         },
         {
-            value: "3",
+            value: "1",
             function: (event) => addNumberInCalculation(event),
         },
         {
@@ -83,21 +70,63 @@ function App() {
             function: (event) => addNumberInCalculation(event),
         },
         {
-            value: "1",
+            value: "3",
             function: (event) => addNumberInCalculation(event),
+        },
+        {
+            value: "-",
+            function: (event) => onSubtrack(event),
+            id : '-',
+        },
+        {
+            value: "0",
+            function: (event) => addNumberInCalculation(event),
+        },
+        {
+            value: "(",
+            function: (event) => addParenthese(event),
+            id : '(',
+        },
+        {
+            value: ")",
+            function: (event) => closeOpenParenthese(event),
+            id : ')',
         },
     ];
 
     let [calc, setCalc] = useState({
-        num: 0,
-        res: 0,
+        num: '0',
         parenthese: [],
     });
 
+    const handleKeyDown = useCallback((event) => {
+        
+        const btn = btns.find(btn => {
+            const id = btn.id ? btn.id : btn.value;
+            return id === event.key.toLowerCase()
+        })
+
+        if(!btn && event.key !== 'Enter'){
+            return;
+        }
+
+        if(event.key === 'Enter'){
+            getCalculation();
+            return;
+        }
+
+        btn.function({target : { textContent : event.key}})
+      });
+
+      useEffect(() => {
+        window.addEventListener("keydown", handleKeyDown);
+    
+        return () => window.removeEventListener("keydown", handleKeyDown);
+      }, [handleKeyDown]);
+
     function clearCalculation(event) {
         setCalc({
-            num: 0,
-            res: 0,
+            num: '0',
             parenthese : []
         });
     }
@@ -115,7 +144,7 @@ function App() {
     }
 
     const addNumberInCalculation = (e) => {
-        if (calc.num === 0) {
+        if (calc.num === '0') {
             setCalc({ ...calc, num: e.target.textContent });
             return;
         }
@@ -155,7 +184,7 @@ function App() {
             return;
         }
 
-         const isTrade = trade(["*", "/", "-", "X", "x"], lastString, event, indexLastString);
+         const isTrade = trade(["*", "/", "-", "X", "x",'.'], lastString, event, indexLastString);
 
         if (isTrade) {
             return;
@@ -163,6 +192,28 @@ function App() {
 
         addCharacter(event.target.textContent)
     };
+
+    const onAddDot = (event) => {
+
+        let matches = calc.num.match(/\d+(\.\d+)*/g);
+        if(matches && matches.at(-1).includes('.')){
+            return
+        }
+
+        const [lastString,indexLastString] = getLastString();
+
+        if (lastString === ".") {
+            return;
+        }
+
+         const isTrade = trade(["*", "/", "-", "X", "x",'+'], lastString, event, indexLastString);
+
+        if (isTrade) {
+            return;
+        }
+
+        addCharacter(event.target.textContent)
+    }
 
     const getLastString = () => {
         let index = 1;
@@ -176,11 +227,16 @@ function App() {
     const onSubtrack = (event) => {
         const [lastString,indexLastString] = getLastString();
 
+        if(calc.num === '0'){
+            setCalc({...calc,num : '-'});
+            return
+        }
+
         if (lastString === "-") {
             return;
         }
 
-        const isTrade = trade(["*", "/", "+", "X", "x"], lastString, event,indexLastString);
+        const isTrade = trade(["*", "/", "+", "X", "x",'.'], lastString, event,indexLastString);
 
         if (isTrade) {
             return;
@@ -195,7 +251,7 @@ function App() {
             return;
         }
 
-        const isTrade = trade(["-", "/", "+"], lastString, event, indexLastString);
+        const isTrade = trade(["-", "/", "+",'.'], lastString, event, indexLastString);
 
         if (isTrade) {
             return;
@@ -211,7 +267,7 @@ function App() {
             return;
         }
 
-        const isTrade = trade(["-", "*", "+", "X", "x"], lastString, event, indexLastString);
+        const isTrade = trade(["-", "*", "+", "X", "x",'.'], lastString, event, indexLastString);
 
         if (isTrade) {
             return;
@@ -221,7 +277,7 @@ function App() {
     };
 
     const addParenthese = (event) => {
-        if (calc.num === 0) {
+        if (calc.num === '0') {
             setCalc({ ...calc, num: "()", parenthese: [...calc.parenthese, true] });
             return;
         }
@@ -263,8 +319,6 @@ function App() {
     };
 
     const getCalculation = useCallback(async () => {
-        //setQuote(state => ({ data: state.data, loading: true }));
-
         if (!calc.num) {
             return;
         }
@@ -279,7 +333,7 @@ function App() {
                 body: JSON.stringify({ calcul: calcToSend }),
             });
             const content = await rawResponse.json();
-            setCalc({ num: 0, res: content });
+            setCalc({...calc , num: content });
         } catch (error) {
             console.log(error);
         }
@@ -287,13 +341,13 @@ function App() {
 
     return (
         <Wrapper>
-            <Screen value={calc.num ? calc.num : calc.res}></Screen>
+            <Screen value={calc.num}></Screen>
             <div className="container">
                 {btns.map((btn, i) => {
                     return (
                         <Button
                             key={i}
-                            onClick={(event) => btn.function(event)}
+                            onClick={btn.function}
                             variant="outline"
                             color="red"
                             radius="xl"

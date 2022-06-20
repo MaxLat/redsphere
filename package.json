@@ -3,8 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "transform": {
+      "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
+    },
+    "testPathIgnorePatterns": ["calculator"]
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "npx tsc",
     "start": "node dist/index.js",
     "dev": "concurrently \"npx tsc --watch\" \"nodemon -q ./dist/index.js\""
@@ -20,9 +28,12 @@
   },
   "devDependencies": {
     "@types/express": "^4.17.13",
+    "@types/jest": "^28.1.2",
     "@types/node": "^17.0.36",
     "concurrently": "^7.2.1",
+    "jest": "^28.1.1",
     "nodemon": "^2.0.16",
+    "ts-jest": "^28.0.5",
     "typescript": "^4.7.2"
   }
 }

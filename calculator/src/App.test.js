@@ -28,7 +28,7 @@ describe("App Component", () => {
 
     it("should clear calculation", () => {
         render(<App />);
-        const clickArray = ["1", "C"];
+        const clickArray = ["1", "c"];
         clickArray.forEach((value) => {
             fireEvent.click(screen.getByTestId(value));
         });
