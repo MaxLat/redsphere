@@ -1,6 +1,9 @@
-# INSTALLATION 
 
-IN A TERMINAL GO TO THE FOLDER WHERE DOCKER-COMPOSE.YML IS 
-TYPE : docker compose up -d
-APPLICATION WILL BE AVAILABE ON http://localhost:3000/
+# REDSPHERE TEST
 
+## How to install
+
+- launch terminal
+- change directory to be in the same folder as docker-compose.yml
+- type : docker compose up -d
+- application will be availaibe on http://localhost:3000/
