@@ -1,1 +1,6 @@
-# redsphere
+# INSTALLATION 
+
+IN A TERMINAL GO TO THE FOLDER WHERE DOCKER-COMPOSE.YML IS 
+TYPE : docker compose up -d
+APPLICATION WILL BE AVAILABE ON http://localhost:3000/
+
