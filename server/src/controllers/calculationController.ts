@@ -12,10 +12,10 @@ export class CalculationController extends BaseController {
             let calcul = req.body.calcul;
             calcul = calcul.replace(/\s/g, "");
             const responseCalcul = this.calculationService.calculateString(calcul);
-
             this.jsonRes(responseCalcul, res);
         } catch (error: any) {
-            this.errRes(res, "une erreur est survenue");
+            console.log(error);
+            this.errRes(res, "error");
         }
     }
 }

@@ -9,7 +9,9 @@
     "transform": {
       "node_modules/variables/.+\\.(j|t)sx?$": "ts-jest"
     },
-    "testPathIgnorePatterns": ["calculator"]
+    "testPathIgnorePatterns": [
+      "calculator"
+    ]
   },
   "scripts": {
     "test": "jest",
